@@ -65,10 +65,39 @@ ORDER BY 1;
 
 -- Percentage of Sales by Outlet Size
 	-- Analyze the correlation between outlet size and total sales.
-    
+SELECT
+	outlet_size,
+    CAST(SUM(sales) AS DECIMAL(10,2)) AS total_sales,
+    ROUND(SUM(sales) * 100 / (SELECT SUM(sales) FROM blinkit_data), 2) AS sales_percentage
+FROM blinkit_data
+GROUP BY outlet_size;
+	-- Different approach
+SELECT 
+    outlet_size,
+    total_sales,
+    ROUND(total_sales * 100 / total_overall_sales, 2) AS sales_percentage
+FROM (
+    SELECT 
+        outlet_size,
+        ROUND(SUM(sales), 2) AS total_sales,
+        SUM(SUM(sales)) OVER() AS total_overall_sales
+    FROM 
+        blinkit_data
+    GROUP BY 
+        outlet_size
+) AS sales_data;
+
 -- Sales by Outlet Location
 	-- Assess the geographic distribution of sales across different locations.
-    
+SELECT outlet_location_type,
+	ROUND(SUM(sales), 2) AS total_sales,
+    ROUND(SUM(sales) * 100 / (SELECT SUM(sales) FROM blinkit_data), 2) AS sales_percentage,
+    CAST(AVG(sales) AS DECIMAL(10,1)) AS avg_sales,
+    COUNT(*) AS No_of_items,
+    CAST(AVG(rating) AS DECIMAL(10,2)) AS avg_rating
+FROM blinkit_data
+GROUP BY 1
+ORDER BY total_sales DESC;
 -- All Metrics by Outlet Type
 	-- Provide a comprehensive view of all key metrics (Total Sales, Average Sales, Number of Items, Average Rating) broken down by different outlet types.
 

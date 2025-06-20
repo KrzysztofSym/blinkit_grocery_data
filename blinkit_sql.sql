@@ -20,7 +20,8 @@ ADD COLUMN outlet_type VARCHAR(50) AFTER outlet_size;
 ALTER TABLE blinkit_data
 MODIFY item_weight DOUBLE NULL;
 
-SELECT * FROM blinkit_data;
+ALTER TABLE blinkit_data
+ADD COLUMN item_type VARCHAR(100) AFTER item_identifier;
 
 SELECT * FROM blinkit_data;
 LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/Blinkit_cleaned.csv'
